@@ -2,7 +2,7 @@ from flask import Flask, render_template, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 import os
 from datetime import datetime
-from forms import SignUpForm, LoginForm
+from forms import SignUpForm, LoginForm, NotesForm, TagsForm
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import UserMixin, login_user, current_user, LoginManager, login_required, logout_user
 from flask_migrate import Migrate
@@ -29,7 +29,9 @@ login_manager.init_app(app)
 def load_user(id):
     return Users.query.get(int(id))
 
-# --------------------------------models------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------#
+#------------------------------------------models-----------------------------------------------#
+#-----------------------------------------------------------------------------------------------#
 
 class Users(db.Model, UserMixin):
     '''A class to create user'''
@@ -50,7 +52,17 @@ class Notes(db.Model):
     date = db.Column(db.DateTime(timezone=True), default=datetime.utcnow())
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-# --------------------------------routes not requiring authentication--------------------------------------
+class Tags(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    tag_name = db.Column(db.String(100), unique=True)
+
+    def __repr__(self):
+        tag_name = self.tag_name
+        return ("Tag id: {self.id}, title: {self.tag_name}>", tag_name)
+
+#-----------------------------------------------------------------------------------------------#
+# -----------------------------routes not requiring authentication------------------------------#
+#-----------------------------------------------------------------------------------------------#
 
 # about us page
 @app.route('/aboutus')
@@ -122,12 +134,35 @@ def login():
     form.password.data = ''
     return render_template("login.html", user=current_user, form=form)
 
-# -------------------------------routes requiring authentication--------------------------------------
+#-----------------------------------------------------------------------------------------------#
+# -------------------------------routes requiring authentication--------------------------------#
+#-----------------------------------------------------------------------------------------------#
 
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
-    return render_template('home.html', user=current_user)
+    form = NotesForm()
+    tags_form = TagsForm()
+    if form.validate_on_submit():
+        title = form.title.data
+        body = form.body.data
+        new_note = Notes(title=title, body=body, user_id=current_user.id)
+        db.session.add(new_note)
+        db.session.commit()
+        flash('Note added!', category='success')
+        return redirect(url_for('home'))
+    if tags_form.validate_on_submit():
+        tag_name = tags_form.tag_name.data
+        new_tag = Tags(tag_name=tag_name)
+        db.session.add(new_tag)
+        db.session.commit()
+        flash('Tag added!', category='success')
+        return redirect(url_for('home'))
+    try:
+        all_tags = Tags.query.all()
+    except:
+        all_tags = []
+    return render_template("home.html", form=form, tags_form=tags_form, user=current_user, all_tags=all_tags)
 
 @app.route('/logout')
 @login_required

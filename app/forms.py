@@ -22,3 +22,8 @@ class NotesForm(FlaskForm):
     title = StringField('Write new note:', validators=[DataRequired()])
     body = StringField('Note', validators=[DataRequired()], widget=TextArea())
     submit = SubmitField('Submit')
+
+class TagsForm(FlaskForm):
+    '''A form to let users create tags'''
+    tag_name = StringField("Tag", validators=[DataRequired()])
+    submit_c = SubmitField("Submit")

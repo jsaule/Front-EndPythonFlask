@@ -19,7 +19,7 @@ db = SQLAlchemy(app)
 
 # sets logging in
 login_manager = LoginManager()
-login_manager.login_view = 'app.login'
+login_manager.login_view = 'login'
 login_manager.init_app(app)
 
 @login_manager.user_loader
@@ -45,17 +45,17 @@ class Users(db.Model, UserMixin):
 # about us page
 @app.route('/aboutus')
 def aboutus():
-    return render_template("aboutus.html")
+    return render_template("aboutus.html", user=current_user)
 
 # invalid URL
 @app.errorhandler(404)
 def page_not_found(error):
-    return render_template("404.html"), 404
+    return render_template("404.html", user=current_user), 404
 
 # internal server error
 @app.errorhandler(500)
 def page_not_found(error):
-    return render_template("500.html"), 500
+    return render_template("500.html", user=current_user), 500
 
 # allows user to sign up
 @app.route('/sign-up', methods=['GET', 'POST']) #add lower
@@ -125,3 +125,4 @@ def logout():
     logout_user()
     flash("You have been logged out!", category="success")
     return redirect(url_for('login'))
+

@@ -1,9 +1,11 @@
 from flask import Flask, render_template, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 import os
+from datetime import datetime
 from forms import SignUpForm, LoginForm
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import UserMixin, login_user, current_user, LoginManager, login_required, logout_user
+from flask_migrate import Migrate
 
 # creates Flask instance
 app = Flask(__name__)
@@ -16,6 +18,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # create database
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 # sets logging in
 login_manager = LoginManager()
@@ -39,6 +42,13 @@ class Users(db.Model, UserMixin):
         name = self.name
         email = self.email
         return (name, email)
+
+class Notes(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    body = db.Column(db.String(10000), nullable=False)
+    date = db.Column(db.DateTime(timezone=True), default=datetime.utcnow())
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
 # --------------------------------routes not requiring authentication--------------------------------------
 

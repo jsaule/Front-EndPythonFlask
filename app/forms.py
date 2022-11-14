@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from wtforms.widgets import TextArea
 from wtforms import StringField, SubmitField, PasswordField, EmailField
 from wtforms.validators import DataRequired, Email, Length, EqualTo
 
@@ -15,3 +16,9 @@ class LoginForm(FlaskForm):
     email = EmailField('Email', validators=[DataRequired(), Length(0, 64), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Login')
+
+class NotesForm(FlaskForm):
+    '''A form to let users write a note'''
+    title = StringField('Write new note:', validators=[DataRequired()])
+    body = StringField('Note', validators=[DataRequired()], widget=TextArea())
+    submit = SubmitField('Submit')

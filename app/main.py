@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, redirect, url_for
+from flask import Flask, render_template, flash, redirect, url_for, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import os
 from datetime import datetime
@@ -6,6 +6,7 @@ from forms import SignUpForm, LoginForm, NotesForm, TagsForm
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import UserMixin, login_user, current_user, LoginManager, login_required, logout_user
 from flask_migrate import Migrate
+import json
 
 # creates Flask instance
 app = Flask(__name__)
@@ -171,4 +172,16 @@ def logout():
     logout_user()
     flash("You have been logged out!", category="success")
     return redirect(url_for('login'))
+
+@app.route('/delete-note', methods=['POST'])
+def delete_note():
+    note = json.loads(request.data)
+    noteId = note['noteId']
+    note = Notes.query.get(noteId)
+    if note:
+        if note.user_id == current_user.id:
+            db.session.delete(note)
+            db.session.commit()
+            flash('Note removed!', category='success')
+    return jsonify({})
 

@@ -41,9 +41,9 @@
         {% for note in user.notes %}
         <li class="shadow-lg p-3 mb-5 bg-body rounded" style="list-style: none;" class="list-group-item">
           <div class="title">
-          <a>{{ note['title'] }}</a>
+          <a>{{ notes['title'] }}</a>
           </div><br/>
-          {{ note['note'] }}
+          {{ notes['body'] }}
           <div style="float:right;" class="btn-group" role="group">
             <button class="btn btn-light" style="margin-left: 0.5rem;"><a style="color:black;" href="/{{note.id}}/edit">edit</a></button>
             <button class="btn btn-light" style="margin-left: 0.5rem;" type="button" class="close" class="btn btn-outline-primary" onClick="deleteNote({{ note.id }})"><span aria-hidden="true">&#215;</span></button>

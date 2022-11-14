@@ -39,6 +39,7 @@ class Users(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(70))
     name = db.Column(db.String(120), nullable=False)
+    notes = db.relationship('Notes')
 
     def __repr__(self):
         name = self.name

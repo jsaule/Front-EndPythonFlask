@@ -41,7 +41,7 @@
         {% for note in user.notes %}
         <li class="shadow-lg p-3 mb-5 bg-body rounded" style="list-style: none;" class="list-group-item">
           <div class="title">
-          <a>{{ note['title'] }}</a>
+          <a style="color: rgb(45, 41, 41); text-decoration-line: underline;" href="{{ url_for('note', id=note.id) }}">{{ note['title'] }}</a>
           </div><br/>
           {{ note['body'] }}
           <div style="float:right;" class="btn-group" role="group">

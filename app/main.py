@@ -174,6 +174,7 @@ def logout():
     return redirect(url_for('login'))
 
 @app.route('/delete-note', methods=['POST'])
+@login_required
 def delete_note():
     note = json.loads(request.data)
     noteId = note['noteId']
@@ -184,4 +185,19 @@ def delete_note():
             db.session.commit()
             flash('Note removed!', category='success')
     return jsonify({})
+
+@app.route('/<int:id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_note(id):
+    form = NotesForm()
+    to_update_note = Notes.query.get_or_404(id)
+    if form.validate_on_submit():
+        to_update_note.title = form.title.data
+        to_update_note.body = form.body.data
+        db.session.commit()
+        flash('Note updated successfully!', category="success")
+        return redirect(url_for('home'))
+    form.body.data = to_update_note.body
+    form.title.data = to_update_note.title
+    return render_template("edit.html", form=form, user=current_user, note=to_update_note)
 

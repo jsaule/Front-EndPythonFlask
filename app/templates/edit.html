@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block pagetitle %}Edit {{note.id}} {% endblock %}
+{% block content %}
+<div class="container">
+<br />
+<form method="POST">
+    {{ form.hidden_tag() }}
+    {{ form.title(class="form-control", rows="1") }}
+    {{ form.body(class="form-control", rows="5") }}
+    <br />
+    {{ form.submit(type="submit", style="font-weight:500;", class="btn btn-dark") }}
+  </div>
+</div>
+{% endblock %}

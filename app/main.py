@@ -2,7 +2,7 @@ from flask import Flask, render_template, flash, redirect, url_for, request, jso
 from flask_sqlalchemy import SQLAlchemy
 import os
 from datetime import datetime
-from forms import SignUpForm, LoginForm, NotesForm, TagsForm
+from forms import SignUpForm, LoginForm, NotesForm, TagsForm, SearchForm
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import UserMixin, login_user, current_user, LoginManager, login_required, logout_user
 from flask_migrate import Migrate
@@ -69,7 +69,8 @@ class Tags(db.Model):
 # about us page
 @app.route('/aboutus')
 def aboutus():
-    return render_template("aboutus.html", user=current_user)
+    form = SearchForm()
+    return render_template("aboutus.html", user=current_user, form=form)
 
 # invalid URL
 @app.errorhandler(404)
@@ -201,3 +202,24 @@ def edit_note(id):
     form.title.data = to_update_note.title
     return render_template("edit.html", form=form, user=current_user, note=to_update_note)
 
+@app.route('/search', methods=['GET', 'POST'])
+@login_required
+def search():
+    form = SearchForm()
+    notes = Notes.query
+    if form.validate_on_submit():
+        note_searched = form.searched.data
+        notes = notes.filter(Notes.title.like('%' + note_searched + '%'))
+        notes = notes.order_by(Notes.title).all()
+        return render_template("search.html", form=form, searched=note_searched, user=current_user, notes=notes)
+
+@app.context_processor
+def base():
+    form = SearchForm()
+    return dict(form=form)
+
+@app.route('/notes/<int:id>')
+@login_required
+def note(id):
+    note = Notes.query.get_or_404(id)
+    return render_template('note.html', note=note, user=current_user)

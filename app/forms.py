@@ -27,3 +27,7 @@ class TagsForm(FlaskForm):
     '''A form to let users create tags'''
     tag_name = StringField("Tag", validators=[DataRequired()])
     submit_c = SubmitField("Submit")
+
+class SearchForm(FlaskForm):
+    searched = StringField("Searched", validators=[DataRequired()])
+    submit = SubmitField("Submit") 

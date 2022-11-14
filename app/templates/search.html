@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block pagetitle %}Search {% endblock %}
+{% block content %}
+<div class="container" style="margin-top: 2rem;">
+    <h1>Search results</h1>
+    <p>(You searched for "{{searched}}")</p>
+    <ul class="list-group list-group-flush">
+        {% for note in notes %}
+        <li class="shadow-lg p-3 mb-5 bg-body rounded" style="list-style: none;" class="list-group-item">
+                <div class="title">{{ note.title }}</div><br/>
+                {{ note.body}}
+                <div style="float:right;" class="btn-group" role="group">
+                    <button class="btn btn-light" style="margin-left: 0.5rem;"><a style="color:black;" href="/{{note.id}}/edit">edit</a></button>
+                    <button class="btn btn-light" style="margin-left: 0.5rem;" type="button" class="close" class="btn btn-outline-primary" onClick="deleteNote({{ note.id }})"><span aria-hidden="true">&#215;</span></button>
+                </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

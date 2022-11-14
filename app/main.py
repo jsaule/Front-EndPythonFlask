@@ -1,9 +1,9 @@
 from flask import Flask, render_template, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 import os
-from forms import SignUpForm
+from forms import SignUpForm, LoginForm
 from werkzeug.security import check_password_hash, generate_password_hash
-from flask_login import login_user, current_user, LoginManager
+from flask_login import login_user, current_user, LoginManager, login_required
 from flask_login import UserMixin
 
 # creates Flask instance
@@ -41,7 +41,7 @@ class Users(db.Model, UserMixin):
         email = self.email
         return (name, email)
 
-# --------------------------------requiring authentication routes--------------------------------------
+# --------------------------------routes not requiring authentication--------------------------------------
 
 # about us page
 @app.route('/aboutus')
@@ -58,7 +58,7 @@ def page_not_found(error):
 def page_not_found(error):
     return render_template("500.html"), 500
 
-# alloes user to sign up
+# allows user to sign up
 @app.route('/sign-up', methods=['GET', 'POST']) #add lower
 def sign_up():
     form = SignUpForm()
@@ -87,9 +87,30 @@ def sign_up():
             return redirect(url_for('home'))
     return render_template("sign_up.html", user=current_user, form=form)
 
-# -------------------------------requiring authentication routes--------------------------------------
+# allows user to log in
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
+        user = Users.query.filter_by(email=email.lower()).first()
+        if user is not None:
+            if check_password_hash(user.password, password):
+                flash('Logged in successfully!', category='success')
+                db.session.add(user)
+                db.session.commit()
+                login_user(user, remember=True)
+                return redirect(url_for('home'))
+            else: 
+                flash('Incorrect password, try again.', category='error')
+        else:
+            flash('Email does not exist', category="error")
+    return render_template("login.html", user=current_user, form=form)
+
+# -------------------------------routes requiring authentication--------------------------------------
 
 @app.route('/', methods=['GET', 'POST'])
+@login_required
 def home():
-    return render_template('home.html')
-
+    return render_template('home.html', user=current_user)

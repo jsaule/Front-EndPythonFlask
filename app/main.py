@@ -3,8 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import os
 from forms import SignUpForm, LoginForm
 from werkzeug.security import check_password_hash, generate_password_hash
-from flask_login import login_user, current_user, LoginManager, login_required
-from flask_login import UserMixin
+from flask_login import UserMixin, login_user, current_user, LoginManager, login_required, logout_user
 
 # creates Flask instance
 app = Flask(__name__)
@@ -85,6 +84,9 @@ def sign_up():
             db.session.commit()
             login_user(new_user, remember=True)
             return redirect(url_for('home'))
+    form.email.data = ''
+    form.name.data = ''
+    form.password.data = '' 
     return render_template("sign_up.html", user=current_user, form=form)
 
 # allows user to log in
@@ -106,6 +108,8 @@ def login():
                 flash('Incorrect password, try again.', category='error')
         else:
             flash('Email does not exist', category="error")
+    form.email.data = ''
+    form.password.data = ''
     return render_template("login.html", user=current_user, form=form)
 
 # -------------------------------routes requiring authentication--------------------------------------
@@ -114,3 +118,10 @@ def login():
 @login_required
 def home():
     return render_template('home.html', user=current_user)
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash("You have been logged out!", category="success")
+    return redirect(url_for('login'))

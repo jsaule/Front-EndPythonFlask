@@ -240,7 +240,7 @@ def edit_note(id):
     if form.validate_on_submit():
         to_update_note.title = form.title.data
         to_update_note.body = form.body.data
-        form.tags.data = [tag.id for tag in to_update_note.note_tags]
+        to_update_note.note_tags = [Tags.query.get(tag_id) for tag_id in form.tags.data]
         try:
             tags_dict = {}
             tags_o = form.tags.choices.append((t.id, t.tag_name))
@@ -250,6 +250,7 @@ def edit_note(id):
                 db.session.add(selected_tag)
         except:
             selected_tag = None
+        db.session.add(to_update_note)
         db.session.commit()
         flash('Note updated successfully!', category="success")
         return redirect(url_for('home'))

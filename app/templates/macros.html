@@ -1,0 +1,13 @@
+{% macro display_tags(note) %}
+    <div class="tags">
+        <p>
+            <br/>
+            {% for tag in note.note_tags %}
+                <button type="button" class="btn btn-no-outline-light" href="#" style="text-decoration: none; color: #80abcc">
+                    {{ tag.tag_name }}
+                </button>
+                &#8197;
+            {% endfor %}
+        </p>
+    </div>
+{% endmacro %}

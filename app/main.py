@@ -162,6 +162,9 @@ def login():
 def home():
     form = NotesForm()
     tags_form = TagsForm()
+    form.tags.choices=[]
+    for t in Tags.query.all():
+        form.tags.choices.append((t.id, t.tag_name))
     if form.validate_on_submit():
         title = form.title.data
         body = form.body.data

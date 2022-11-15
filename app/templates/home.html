@@ -12,14 +12,6 @@
             <div align="center">{{ tags_form.submit_c(type="submit", style="font-weight:500;", class="btn btn-dark btn-sm") }}</div>
         </form>
     </li>
-    <li>
-    <p>&#8197;</p>
-    </li>
-    <li align="center">
-      {% for tag in all_tags%}
-      <button class="btn btn-light" style="margin-left: 0.5rem;" type="button">{{ tag['tag_name'] }}</button>
-      {% endfor %}
-    </li>
 </ul>
 <div class="container" style="background-color: f4f4f4;">
     <h1 align="center">Notes</h1>
@@ -31,6 +23,9 @@
           <h6>{{ form.title.label(class="form-label") }}</h6>
           {{ form.title(class="form-control", placeholder="Title") }}
           {{ form.body(class="form-control", rows="5", placeholder="Note") }}
+          <br />
+          {{ form.tags.label(class="form-label") }}
+          {{ form.tags(class="form-control", rows="4", multiple=True, size=7) }}
           <br />
           <div align="center">
           {{ form.submit(type="submit", style="font-weight:500;", class="btn btn-dark") }}

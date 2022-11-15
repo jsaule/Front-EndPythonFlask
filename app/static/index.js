@@ -12,6 +12,6 @@ function deleteNote(noteId) {
       method: "POST",
       body: JSON.stringify({ tagId: tagId }),
     }).then((_res) => {
-      window.location.href = "/";
+      window.location.href = "/tags";
     });
   }

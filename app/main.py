@@ -214,10 +214,9 @@ def delete_tag():
     tagId = tag['tagId']
     tag = Tags.query.get(tagId)
     if tag:
-        if tag.user_id == current_user.id:
-            db.session.delete(tag)
-            db.session.commit()
-            flash('Tag removed!', category='success')
+        db.session.delete(tag)
+        db.session.commit()
+        flash('Tag removed!', category='success')
     return jsonify({})
 
 @app.route('/<int:id>/edit', methods=['GET', 'POST'])

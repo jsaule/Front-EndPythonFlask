@@ -4,13 +4,17 @@
 {% block content %}
 <ul class="nav nav-pills">
     <li class="box" style="margin-left: 2rem;" class="nav-item" id="labels">
-        <h6 align="center">Create new tag:</h6>
-        <form class="shadow-lg p-3 mb-5 bg-body rounded" style="list-style: none;" class="list-group-item" method="POST" align="left">
-            {{ form.hidden_tag() }}
-            {{ tags_form.tag_name(class="form-control", placeholder="Tag") }}
-            <br/>
-            <div align="center">{{ tags_form.submit_c(type="submit", style="font-weight:500;", class="btn btn-dark btn-sm") }}</div>
-        </form>
+      <h6 align="left">Create new tag:</h6>
+      <form class="shadow-lg p-3 mb-5 bg-body rounded" style="list-style: none;" class="list-group-item" method="POST" align="left">
+          {{ form.hidden_tag() }}
+          {{ tags_form.tag_name(class="form-control", placeholder="Tag") }}
+          <br/>
+          <div align="center">{{ tags_form.submit_c(type="submit", style="font-weight:500;", class="btn btn-dark btn-sm") }}</div>
+      </form>
+    </li>
+    <li class="box" style="margin-left: 2rem;" class="nav-item" id="labels">
+      <h6 align="left">Edit tags:</h6><br />
+      <dev class="shadow-lg p-3 mb-5 bg-body rounded" style="list-style: none;" class="list-group-item"><button style="font-weight:500;", class="btn btn-dark btn-sm"><a style="color:rgb(246, 239, 239);" href="{{ url_for('tags') }}">Edit tags</a></button></dev>
     </li>
 </ul>
 <div class="container" style="background-color: f4f4f4;">

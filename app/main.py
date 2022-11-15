@@ -235,6 +235,25 @@ def edit_note(id):
     form.title.data = to_update_note.title
     return render_template("edit.html", form=form, user=current_user, note=to_update_note)
 
+@app.route('/tags/<int:id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_tag(id):
+    form = TagsForm()
+    to_update_tag = Tags.query.get_or_404(id)
+    if form.validate_on_submit():
+        to_update_tag.tag_name = form.tag_name.data
+        db.session.commit()
+        flash('Tag updated successfully!', category="success")
+        return redirect(url_for('tags'))
+    form.tag_name.data = to_update_tag.tag_name
+    return render_template("edit_tag.html", form=form, user=current_user, tag=to_update_tag)
+
+@app.route('/tags', methods=['GET', 'POST'])
+@login_required
+def tags():
+    tags = Tags.query.order_by(Tags.id).all()
+    return render_template('tags.html', tags=tags, user=current_user)
+
 @app.route('/search', methods=['GET', 'POST'])
 @login_required
 def search():

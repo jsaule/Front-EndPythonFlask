@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block pagetitle %}Tags {% endblock %}
+{% block content %}
+<div class="container" style="margin-top: 2rem;">
+    <h2 align="left">Edit tags:</h2><br />
+    <ul class="list-group list-group-flush" id="notes">
+        {% for tag in tags %}
+        <li class="shadow-lg p-3 mb-5 bg-body rounded" style="list-style: none;" class="list-group-item">
+          <div class="title">
+          {{ tag['tag_name'] }}
+          <div style="float:right;" class="btn-group" role="group">
+            <button class="btn btn-light" style="margin-left: 0.5rem;"><a style="color:black;" href="{{ url_for('edit_tag', id=tag.id) }}">edit</a></button>
+            <button class="btn btn-light" style="margin-left: 0.5rem;" type="button" class="close" class="btn btn-outline-primary" onClick="deleteTag({{ tag.id }})"><span aria-hidden="true">&#215;</span></button>
+          </div>
+        </li>
+        {% endfor %}
+</div>
+{% endblock %}

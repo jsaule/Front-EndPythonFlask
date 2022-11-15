@@ -11,13 +11,13 @@ import json
 # creates Flask instance
 app = Flask(__name__)
 
-# set configs
+# sets configs
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(basedir, "data.sqlite")
 app.config['SECRET_KEY'] = 'SSDSDDSDSDSFSLGJNAOOAJGOAJNWARGAWRGAWRG'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-# create database
+# creates database
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
@@ -158,6 +158,7 @@ def login():
 # -------------------------------routes requiring authentication--------------------------------#
 #-----------------------------------------------------------------------------------------------#
 
+# main landing page
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
@@ -198,6 +199,7 @@ def home():
     notes = Notes.query.all()
     return render_template("home.html", form=form, tags_form=tags_form, user=current_user, all_tags=all_tags, notes=notes)
 
+# allows user to logout
 @app.route('/logout')
 @login_required
 def logout():
@@ -205,6 +207,7 @@ def logout():
     flash("You have been logged out!", category="success")
     return redirect(url_for('login'))
 
+# allows user to delete note
 @app.route('/delete-note', methods=['POST'])
 @login_required
 def delete_note():
@@ -218,6 +221,7 @@ def delete_note():
             flash('Note removed!', category='success')
     return jsonify({})
 
+# allows user to delete tag
 @app.route('/delete-tag', methods=['POST'])
 @login_required
 def delete_tag():
@@ -230,6 +234,7 @@ def delete_tag():
         flash('Tag removed!', category='success')
     return jsonify({})
 
+# allows user to edit note
 @app.route('/<int:id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_note(id):
@@ -260,6 +265,7 @@ def edit_note(id):
     form.tags.data = [tag.id for tag in to_update_note.note_tags]
     return render_template("edit.html", form=form, user=current_user, note=to_update_note)
 
+# allows user to edit tag
 @app.route('/tags/<int:id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_tag(id):
@@ -273,12 +279,14 @@ def edit_tag(id):
     form.tag_name.data = to_update_tag.tag_name
     return render_template("edit_tag.html", form=form, user=current_user, tag=to_update_tag)
 
+# allows user to access all tags and edit or delete them
 @app.route('/tags', methods=['GET', 'POST'])
 @login_required
 def tags():
     tags = Tags.query.order_by(Tags.id).all()
     return render_template('tags.html', tags=tags, user=current_user)
 
+# allows user to search note's titles
 @app.route('/search', methods=['GET', 'POST'])
 @login_required
 def search():
@@ -290,17 +298,20 @@ def search():
         notes = notes.order_by(Notes.title).all()
         return render_template("search.html", form=form, searched=note_searched, user=current_user, notes=notes)
 
+# allows search in navbar
 @app.context_processor
 def base():
     form = SearchForm()
     return dict(form=form)
 
+# allows user to access individual note
 @app.route('/notes/<int:id>')
 @login_required
 def note(id):
     note = Notes.query.get_or_404(id)
     return render_template('note.html', note=note, user=current_user)
 
+# allows user to filter notes by tags
 @app.route('/tags/<tag_name>/')
 @login_required
 def tag(tag_name):

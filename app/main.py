@@ -234,14 +234,28 @@ def delete_tag():
 def edit_note(id):
     form = NotesForm()
     to_update_note = Notes.query.get_or_404(id)
+    form.tags.choices=[]
+    for t in Tags.query.all():
+        form.tags.choices.append((t.id, t.tag_name))
     if form.validate_on_submit():
         to_update_note.title = form.title.data
         to_update_note.body = form.body.data
+        form.tags.data = [tag.id for tag in to_update_note.note_tags]
+        try:
+            tags_dict = {}
+            tags_o = form.tags.choices.append((t.id, t.tag_name))
+            tags_dict_full = tags_dict.update(tags_o)
+            for tg in tags_dict_full():
+                selected_tag = Tags.query.get(tg)
+                db.session.add(selected_tag)
+        except:
+            selected_tag = None
         db.session.commit()
         flash('Note updated successfully!', category="success")
         return redirect(url_for('home'))
     form.body.data = to_update_note.body
     form.title.data = to_update_note.title
+    form.tags.data = [tag.id for tag in to_update_note.note_tags]
     return render_template("edit.html", form=form, user=current_user, note=to_update_note)
 
 @app.route('/tags/<int:id>/edit', methods=['GET', 'POST'])

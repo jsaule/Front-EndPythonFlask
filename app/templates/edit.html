@@ -2,13 +2,18 @@
 {% block pagetitle %}Edit {{note.id}} {% endblock %}
 {% block content %}
 <div class="container">
-<br />
-<form method="POST">
-    {{ form.hidden_tag() }}
-    {{ form.title(class="form-control", rows="1") }}
-    {{ form.body(class="form-control", rows="5") }}
-    <br />
-    {{ form.submit(type="submit", style="font-weight:500;", class="btn btn-dark") }}
-  </div>
+  <br />
+  <form method="POST">
+      {{ form.hidden_tag() }}
+      {{ form.title(class="form-control", rows="1") }}
+      {{ form.body(class="form-control", rows="5") }}
+      <br />
+      {{ form.tags.label(class="form-label") }}
+      {{ form.tags(class="form-control", rows="4", multiple=True, size=7) }}
+      <br />
+      {{ form.submit(type="submit", style="font-weight:500;", class="btn btn-dark") }}
+      <br />
+    </div>
+  <form>
 </div>
 {% endblock %}

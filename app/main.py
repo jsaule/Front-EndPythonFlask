@@ -46,7 +46,7 @@ class Users(db.Model, UserMixin):
         id = self.id
         name = self.name
         email = self.email
-        return ("User id: {self.id}, name: {self.name}, email: {self.email}>", id, name, email)
+        return f"User id: {id}, name: {name}, email: {email}"
 
 '''Association table between Notes and Tags'''
 notes_tags = db.Table('notes_tags',
@@ -62,7 +62,7 @@ class Tags(db.Model):
     def __repr__(self):
         id = self.id
         tag_name= self.tag_name
-        return ("Tag id: {self.id}, title: {self.tag_name}>", id, tag_name)
+        return f"Tag id: {id}, title: {tag_name}"
 
 class Notes(db.Model):
     '''A class to create Note'''
@@ -76,7 +76,7 @@ class Notes(db.Model):
     def __repr__(self):
         id = self.id
         title = self.title
-        return ("Tag id: {self.id}, title: {self.title}", id, title)
+        return f"Tag id: {id}, title: {title}"
 
 #-----------------------------------------------------------------------------------------------#
 # -----------------------------routes not requiring authentication------------------------------#
@@ -168,6 +168,7 @@ def home():
     if form.validate_on_submit():
         title = form.title.data
         body = form.body.data
+        tags = [Tags.query.get(tag_id) for tag_id in form.tags.data]
         try:
             tags_dict = {}
             tags_o = form.tags.choices.append((t.id, t.tag_name))
@@ -175,10 +176,9 @@ def home():
             for tg in tags_dict_full():
                 selected_tag = Tags.query.get(tg)
                 db.session.add(selected_tag)
-                #new_note.tags.append(selected_tag)
         except:
             selected_tag = None
-        new_note = Notes(title=title, body=body, user_id=current_user.id)
+        new_note = Notes(title=title, body=body, note_tags=tags, user_id=current_user.id)
         db.session.add(new_note)
         db.session.commit()
         flash('Note added!', category='success')

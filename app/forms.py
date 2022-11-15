@@ -22,7 +22,7 @@ class NotesForm(FlaskForm):
     '''A form to let users write a note'''
     title = StringField('Write new note:', validators=[DataRequired()])
     body = StringField('Note', validators=[DataRequired()], widget=TextArea())
-    tags = SelectMultipleField("Available tags: ", coerce=str)
+    tags = SelectMultipleField("Available tags: ", coerce=int)
     submit = SubmitField('Submit')
 
 class TagsForm(FlaskForm):

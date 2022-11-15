@@ -168,6 +168,16 @@ def home():
     if form.validate_on_submit():
         title = form.title.data
         body = form.body.data
+        try:
+            tags_dict = {}
+            tags_o = form.tags.choices.append((t.id, t.tag_name))
+            tags_dict_full = tags_dict.update(tags_o)
+            for tg in tags_dict_full():
+                selected_tag = Tags.query.get(tg)
+                db.session.add(selected_tag)
+                #new_note.tags.append(selected_tag)
+        except:
+            selected_tag = None
         new_note = Notes(title=title, body=body, user_id=current_user.id)
         db.session.add(new_note)
         db.session.commit()

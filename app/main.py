@@ -204,6 +204,19 @@ def delete_note():
             flash('Note removed!', category='success')
     return jsonify({})
 
+@app.route('/delete-tag', methods=['POST'])
+@login_required
+def delete_tag():
+    tag = json.loads(request.data)
+    tagId = tag['tagId']
+    tag = Tags.query.get(tagId)
+    if tag:
+        if tag.user_id == current_user.id:
+            db.session.delete(tag)
+            db.session.commit()
+            flash('Tag removed!', category='success')
+    return jsonify({})
+
 @app.route('/<int:id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_note(id):
@@ -240,3 +253,9 @@ def base():
 def note(id):
     note = Notes.query.get_or_404(id)
     return render_template('note.html', note=note, user=current_user)
+
+@app.route('/tags/<tag_name>/')
+@login_required
+def tag(tag_name):
+    tag = Tags.query.filter_by(tag_name=tag_name).first_or_404()
+    return render_template('tag.html', tag=tag, user=current_user)

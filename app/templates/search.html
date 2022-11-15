@@ -1,3 +1,4 @@
+{% from 'macros.html' import display_tags %}
 {% extends "base.html" %}
 {% block pagetitle %}Search {% endblock %}
 {% block content %}
@@ -13,6 +14,7 @@
                     <button class="btn btn-light" style="margin-left: 0.5rem;"><a style="color:black;" href="/{{note.id}}/edit">edit</a></button>
                     <button class="btn btn-light" style="margin-left: 0.5rem;" type="button" class="close" class="btn btn-outline-primary" onClick="deleteNote({{ note.id }})"><span aria-hidden="true">&#215;</span></button>
                 </div>
+                {{ display_tags(note) }}
         </li>
         {% endfor %}
     </ul>

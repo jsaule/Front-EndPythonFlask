@@ -3,8 +3,8 @@
         <p>
             <br/>
             {% for tag in note.note_tags %}
-                <button type="button" class="btn btn-no-outline-light" href="#" style="text-decoration: none; color: #80abcc">
-                    {{ tag.tag_name }}
+                <a type="button" class="btn btn-light" href="{{ url_for('tag', tag_name=tag.tag_name)}}" style="text-decoration: none; color: #80abcc">
+                    {{ tag.tag_name }}</a>
                 </button>
                 &#8197;
             {% endfor %}

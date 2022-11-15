@@ -43,24 +43,40 @@ class Users(db.Model, UserMixin):
     notes = db.relationship('Notes')
 
     def __repr__(self):
+        id = self.id
         name = self.name
         email = self.email
-        return (name, email)
+        return ("User id: {self.id}, name: {self.name}, email: {self.email}>", id, name, email)
+
+'''Association table between Notes and Tags'''
+notes_tags = db.Table('notes_tags',
+                    db.Column('notes_id', db.Integer, db.ForeignKey('notes.id')),
+                    db.Column('tags_id', db.Integer, db.ForeignKey('tags.id'))
+                    )
+
+class Tags(db.Model):
+    '''A class to create tag'''
+    id = db.Column(db.Integer, primary_key=True)
+    tag_name = db.Column(db.String(100))
+
+    def __repr__(self):
+        id = self.id
+        tag_name= self.tag_name
+        return ("Tag id: {self.id}, title: {self.tag_name}>", id, tag_name)
 
 class Notes(db.Model):
+    '''A class to create Note'''
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
     body = db.Column(db.String(10000), nullable=False)
     date = db.Column(db.DateTime(timezone=True), default=datetime.utcnow())
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-
-class Tags(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    tag_name = db.Column(db.String(100), unique=True)
+    note_tags = db.relationship('Tags', secondary=notes_tags, backref='tag_notes')
 
     def __repr__(self):
-        tag_name = self.tag_name
-        return ("Tag id: {self.id}, title: {self.tag_name}>", tag_name)
+        id = self.id
+        title = self.title
+        return ("Tag id: {self.id}, title: {self.title}", id, title)
 
 #-----------------------------------------------------------------------------------------------#
 # -----------------------------routes not requiring authentication------------------------------#
@@ -165,7 +181,8 @@ def home():
         all_tags = Tags.query.all()
     except:
         all_tags = []
-    return render_template("home.html", form=form, tags_form=tags_form, user=current_user, all_tags=all_tags)
+    notes = Notes.query.all()
+    return render_template("home.html", form=form, tags_form=tags_form, user=current_user, all_tags=all_tags, notes=notes)
 
 @app.route('/logout')
 @login_required

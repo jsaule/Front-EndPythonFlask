@@ -18,3 +18,17 @@
 .title {
   font-weight: bold;
 }
+
+.parent {
+  display: flex;
+}
+
+.narrow {
+  float: left;
+  width: 10rem;
+}
+
+.wide {
+  float: right;
+  width: calc(100% - 10rem);
+}

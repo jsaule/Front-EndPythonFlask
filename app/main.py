@@ -76,7 +76,8 @@ class Notes(db.Model):
     def __repr__(self):
         id = self.id
         title = self.title
-        return f"Tag id: {id}, title: {title}"
+        tag_ids = [tag.id for tag in self.note_tags]
+        return f"Note id: {id}, title: {title}, tag ids: {tag_ids}"
 
 #-----------------------------------------------------------------------------------------------#
 # -----------------------------routes not requiring authentication------------------------------#

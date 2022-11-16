@@ -1,0 +1,62 @@
+{% from 'macros.html' import display_tags %}
+{% extends "base.html" %}
+{% block pagetitle %}My {% endblock %}
+{% block content %}
+<div class="parent">
+  <div class="narrow">
+    <ul class="nav nav-pills">
+        <li class="box" style="margin-left: 2rem;" class="nav-item" id="labels">
+          <h6 align="left">Create new tag:</h6>
+          <form class="shadow-lg p-3 mb-5 bg-body rounded" style="list-style: none;" class="list-group-item" method="POST" align="left">
+              {{ form.hidden_tag() }}
+              {{ tags_form.tag_name(class="form-control", placeholder="Tag") }}
+              <br/>
+              <div align="center">{{ tags_form.submit_c(type="submit", style="font-weight:500;", class="btn btn-dark btn-sm") }}</div>
+          </form>
+          <h6 style="margin-bottom: 1rem;" align="left">Edit existing tags:</h6><br />
+          <div align="center" class="shadow-lg p-3 mb-5 bg-body rounded" style="list-style: none; width: 8rem; margin-top: -2rem;" class="list-group-item">
+            <button style="font-weight:500;", class="btn btn-dark btn-sm"><a style="color:rgb(246, 239, 239);" href="{{ url_for('tags') }}">Edit</a></button>
+          </div>
+        </li>
+    </ul>
+  </div>
+  <div class="wide">
+    <div class="container" style="background-color: f4f4f4;">
+        <h1 align="center">Notes</h1>
+        <p align="center">Welcome, {{ user.name|striptags }}!</p>
+        <br />
+        <div class="shadow-lg p-3 mb-5 bg-body rounded">
+          <form method="POST" align="left">
+              {{ form.hidden_tag() }}
+              <h6>{{ form.title.label(class="form-label") }}</h6>
+              {{ form.title(class="form-control", placeholder="Title") }}
+              {{ form.body(class="form-control", rows="5", placeholder="Note") }}
+              <br />
+              {{ form.tags.label(class="form-label") }}
+              {{ form.tags(class="form-control", rows="4", multiple=True, size=7) }}
+              <br />
+              <div align="center">
+              {{ form.submit(type="submit", style="font-weight:500;", class="btn btn-dark") }}
+              </div>
+          </form>
+        </div>
+        <br/>
+        <ul class="list-group list-group-flush" id="notes">
+            {% for note in user.notes %}
+            <li class="shadow-lg p-3 mb-5 bg-body rounded" style="list-style: none;" class="list-group-item">
+              <div class="title">
+              <a style="color: rgb(45, 41, 41); text-decoration-line: underline;" href="{{ url_for('note', id=note.id) }}">{{ note['title'] }}</a>
+              </div><br/>
+              {{ note['body'] }}
+              <div style="float:right;" class="btn-group" role="group">
+                <button class="btn btn-light" style="margin-left: 0.5rem;"><a style="color:black;" href="/{{note.id}}/edit">edit</a></button>
+                <button class="btn btn-light" style="margin-left: 0.5rem;" type="button" class="close" class="btn btn-outline-primary" onClick="deleteNote({{ note.id }})"><span aria-hidden="true">&#215;</span></button>
+              </div>
+              {{ display_tags(note) }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

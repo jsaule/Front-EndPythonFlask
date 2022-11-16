@@ -8,7 +8,7 @@
     <ul class="list-group list-group-flush">
         {% for note in notes %}
         <li class="shadow-lg p-3 mb-5 bg-body rounded" style="list-style: none;" class="list-group-item">
-                <div class="title">{{ note.title }}</div><br/>
+                <div class="title"><a style="color: rgb(45, 41, 41); text-decoration-line: underline;" href="{{ url_for('note', id=note.id) }}">{{ note.title }}</a></div><br/>
                 {{ note.body}}
                 <div style="float:right;" class="btn-group" role="group">
                     <button class="btn btn-light" style="margin-left: 0.5rem;"><a style="color:black;" href="/{{note.id}}/edit">edit</a></button>
